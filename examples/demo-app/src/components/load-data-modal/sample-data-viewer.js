@@ -80,14 +80,8 @@ const SampleMap = ({id, sample, onClick}) => (
       </div>
       <div className="sample-map__title">{sample.label}</div>
       <div className="sample-map__size">
-        <FormattedMessage
-          id={'sampleDataViewer.rowCount'}
-          values={{rowCount: numFormat(sample.size)}}
-        />
-      </div>
-      <StyledImageCaption className="sample-map__image__caption">
         {sample.description}
-      </StyledImageCaption>
+      </div>
     </div>
   </StyledSampleMap>
 );
