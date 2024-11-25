@@ -118,7 +118,11 @@ function AiAssistantManagerFactory(
           </StyledAiAssistantPanelHeader>
 
           <StyledAiAssistantPanelContent>
-            {!aiAssistant.config.isReady ? (
+            {
+              // GEOSURE NOTE: temporary logic for getting view to show
+            // !aiAssistant.config.isReady ? (
+              false ? (
+                
               <AiAssistantConfig
                 aiAssistantConfig={aiAssistant.config}
                 updateAiAssistantConfig={aiAssistantActions.updateAiAssistantConfig}

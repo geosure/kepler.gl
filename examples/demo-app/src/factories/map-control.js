@@ -75,19 +75,19 @@ function CustomMapControlFactory(
 
   const CustomMapControl = props => {
     const showEffects = Boolean(props.mapControls?.effect?.active);
-    const showAiAssistant = Boolean(props.mapControls?.aiAssistant?.active);
+    const showAiAssistant = true;// Boolean(props.mapControls?.aiAssistant?.active);
     return (
       <StyledMapControlOverlay
         top={props.top}
         rightPanelVisible={showEffects || showAiAssistant}
         fullHeight={showAiAssistant}
       >
-        <StyledMapControlPanel>
+        {/* <StyledMapControlPanel>
           {!props.isExport && props.currentSample ? <SampleMapPanel {...props} /> : null}
           <MapControl {...props} top={0} actionComponents={actionComponents} />
-        </StyledMapControlPanel>
+        </StyledMapControlPanel> */}
         <StyledMapControlContextPanel>
-          {showEffects ? <EffectManager /> : null}
+          {/* {showEffects ? <EffectManager /> : null} */}
           {showAiAssistant ? <AiAssistantManager /> : null}
         </StyledMapControlContextPanel>
       </StyledMapControlOverlay>
