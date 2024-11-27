@@ -83,8 +83,10 @@ function AiAssistantComponentFactory() {
       modelProvider: aiAssistant.config.provider,
       model: aiAssistant.config.model,
       apiKey: aiAssistant.config.apiKey,
+      // GEOSURE: these are the most important aspects for our purposes.
       instructions: INSTRUCTIONS,
       functions
+      //
     };
 
     const {initializeAssistant} = useAssistant(assistantProps);
@@ -123,7 +125,7 @@ function AiAssistantComponentFactory() {
           onRemoveScreenshot={onRemoveScreenshot}
           fontSize={'text-tiny'}
           botMessageClassName={''}
-          githubIssueLink={'https://github.com/keplergl/kepler.gl/issues'}
+          // githubIssueLink={'https://github.com/keplergl/kepler.gl/issues'}
         />
       </StyledAiAssistantComponent>
     );

@@ -3,8 +3,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { withState, SidebarFactory } from '@kepler.gl/components';
-import { toggleModal } from '@kepler.gl/actions';
+import { layerConfigChange } from '@kepler.gl/actions';
 import { connect } from 'react-redux';
+
+import { LayerToggle } from '../components/layer-toggle';
 
 const StyledTitle = styled.div`
   color: #FFF;
@@ -38,6 +40,8 @@ function CustomSidebarFactory(...deps) {
   const CustomSideBar = (props) => {
     const { currentSample } = props;
     if (!currentSample) return null;
+    console.log(props)
+    console.log('*********')
 
     return (
       <SideBar {...props}>
@@ -47,21 +51,32 @@ function CustomSidebarFactory(...deps) {
         {/* </div> */}
         <StyledTitle>{currentSample.label}</StyledTitle>
         <StyledSubTitle>{currentSample.description}</StyledSubTitle>
-        <StyledSelectButton onClick={() => props.dispatch(toggleModal('addData'))}>
+        <StyledSelectButton
+          onClick={() => {
+            // props.dispatch(toggleModal('addData')) // KEEP THIS
+
+            // This will work for toggling layers on and off in the toggle component:
+            if (props.layers.length) {
+              const layer = props.layers[0]
+              const isVisible = !layer.config.isVisible
+              props.dispatch(layerConfigChange(layer, {isVisible}))
+            }
+          }}
+        >
           Select other city
         </StyledSelectButton>
-        {/* Render other content */}
+        <LayerToggle/>
+        {/* TODO: toggle advanced options */}
         {/* <SideBar {...props}/> */}
       </SideBar>
     );
   };
 
-  // return withState([], state => ({...state.demo.app}))(CustomSideBar);
   const mapStateToProps = (state) => ({
     // Add other props if needed
   });
   
-  return connect(mapStateToProps)(withState([], state => ({...state.demo.app}))(CustomSideBar));
+  return connect(mapStateToProps)(withState([], state => ({...state.demo.app, layers: state.demo.keplerGl.map.visState.layers}))(CustomSideBar));
 }
 
 // export default CustomSidebarFactory;
