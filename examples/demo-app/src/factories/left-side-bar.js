@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { withState, SidebarFactory } from '@kepler.gl/components';
-import { layerConfigChange } from '@kepler.gl/actions';
+import { toggleModal } from '@kepler.gl/actions';
 import { connect } from 'react-redux';
 
 import { LayerToggle } from '../components/layer-toggle';
@@ -46,26 +46,17 @@ function CustomSidebarFactory(...deps) {
     return (
       <SideBar {...props}>
         <img src='https://firebasestorage.googleapis.com/v0/b/geosure-users.appspot.com/o/geosurelogowhite.png?alt=media&token=c1795905-d90c-45c7-bfa4-0a0081b2eef5'/>
-        {/* <div className="sample-map__image"> */}
-          {currentSample.imageUrl && <img src={currentSample.imageUrl} />}
-        {/* </div> */}
+        {currentSample.imageUrl && <img src={currentSample.imageUrl} />}
         <StyledTitle>{currentSample.label}</StyledTitle>
         <StyledSubTitle>{currentSample.description}</StyledSubTitle>
         <StyledSelectButton
           onClick={() => {
-            // props.dispatch(toggleModal('addData')) // KEEP THIS
-
-            // This will work for toggling layers on and off in the toggle component:
-            if (props.layers.length) {
-              const layer = props.layers[0]
-              const isVisible = !layer.config.isVisible
-              props.dispatch(layerConfigChange(layer, {isVisible}))
-            }
+            props.dispatch(toggleModal('addData'))
           }}
         >
           Select other city
         </StyledSelectButton>
-        <LayerToggle/>
+        <LayerToggle layers={props.layers || []} dispatch={props.dispatch} />
         {/* TODO: toggle advanced options */}
         {/* <SideBar {...props}/> */}
       </SideBar>

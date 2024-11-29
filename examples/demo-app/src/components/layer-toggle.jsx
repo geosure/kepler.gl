@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { layerConfigChange } from '@kepler.gl/actions';
 
 // Styled-components
 const ToggleContainer = styled.div`
@@ -42,96 +43,34 @@ const ToggleThumb = styled.div`
 `;
 
 // React component
-export const LayerToggle = () => {
-  const [toggles, setToggles] = useState({
-    physicalScore: false,
-    politicalViolence: true,
-    pettyCrimes: false,
-    sexualAssault: false,
-  });
+export const LayerToggle = ({layers, dispatch}) => {
+	// State to track the currently active toggle by its ID
+  const [activeToggle, setActiveToggle] = useState(
+    layers.length > 0 ? layers[0].id : null
+  );
 
-  const handleToggle = (key) => {
-    setToggles((prevState) => ({
-      ...prevState,
-      [key]: !prevState[key],
-    }));
+  const handleToggle = (id) => {
+    // If the same toggle is clicked, deactivate it; otherwise, set it as active
+    setActiveToggle(id);
+		layers.forEach(layer => {
+			const isVisible = layer.id === id
+			dispatch(layerConfigChange(layer, {isVisible}))
+		});
   };
 
   return (
     <ToggleContainer>
-      {[
-        { label: "Physical Score", key: "physicalScore" },
-        { label: "Political violence", key: "politicalViolence" },
-        { label: "Petty crimes", key: "pettyCrimes" },
-        { label: "Sexual assault", key: "sexualAssault" },
-      ].map(({ label, key }) => (
-        <ToggleItem key={key}>
-          <ToggleLabel>{label}</ToggleLabel>
+      {layers.map(({ id, config }) => (
+        <ToggleItem key={id}>
+          <ToggleLabel>{config.label}</ToggleLabel>
           <ToggleSwitch
-            active={toggles[key]}
-            onClick={() => handleToggle(key)}
+            active={activeToggle === id}
+            onClick={() => handleToggle(id)}
           >
-            <ToggleThumb active={toggles[key]} />
+            <ToggleThumb active={activeToggle === id} />
           </ToggleSwitch>
         </ToggleItem>
       ))}
     </ToggleContainer>
   );
 };
-
-/*
-pseudo code
-
-// from layer-panel.tsx
-
-_toggleVisibility: MouseEventHandler = e => {
-      e.stopPropagation();
-      const isVisible = !this.props.layer.config.isVisible;
-      this.updateLayerConfig({isVisible});
-    };
-
-updateLayerConfig = (newProp: Partial<LayerBaseConfig>) => {
-      this.props.layerConfigChange(this.props.layer, newProp);
-    };
-
-    type LayerPanelProps = {
-        className?: string;
-        style?: CSSProperties;
-        onMouseDown?: MouseEventHandler;
-        onTouchStart?: TouchEventHandler;
-        layer: Layer;
-        datasets: Datasets;
-        layerTypeOptions: {
-            id: string;
-            label: string;
-            icon: any; //
-            requireData: any; //
-        }[];
-        isDraggable?: boolean;
-        idx: number;
-        openModal: ActionHandler<typeof toggleModal>;
-        layerColorUIChange: ActionHandler<typeof VisStateActions.layerColorUIChange>;
-        layerConfigChange: ActionHandler<typeof VisStateActions.layerConfigChange>;
-        layerVisualChannelConfigChange: ActionHandler<
-            typeof VisStateActions.layerVisualChannelConfigChange
-        >;
-        layerSetIsValid: ActionHandler<typeof VisStateActions.layerSetIsValid>;
-        layerTypeChange: ActionHandler<typeof VisStateActions.layerTypeChange>;
-        layerVisConfigChange: ActionHandler<typeof VisStateActions.layerVisConfigChange>;
-        layerTextLabelChange: ActionHandler<typeof VisStateActions.layerTextLabelChange>;
-        removeLayer: ActionHandler<typeof VisStateActions.removeLayer>;
-        zoomToLayer: ActionHandler<typeof MapStateActions.fitBounds>;
-        duplicateLayer: ActionHandler<typeof VisStateActions.duplicateLayer>;
-        listeners?: React.ElementType;
-        };
-
-    // see base-layer.ts
-    // In theory, if I can get this.props.layer then I can call like this:
-    this.props.layerConfigChange(this.props.layer, {isVisible: false});
-
-    or....
-
-    just dispatch action: layerConfigChange. except i dont have avvess to the layer...
-
-*/
-
