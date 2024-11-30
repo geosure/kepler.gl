@@ -1,4 +1,5 @@
 import { bogotaConfig } from './bogotaConfig';
+import { geosurePhysicalMap } from './geosureMap';
 import { londonConfig } from './londonConfig';
 import { newyorkConfig } from './newyorkConfig';
 
@@ -41,5 +42,6 @@ export const geosureSampleMaps = [
     "dataUrl": "https://raw.githubusercontent.com/keplergl/kepler.gl-data/master/nyc_earnings/data.arrow",
     // "configUrl": "https://raw.githubusercontent.com/keplergl/kepler.gl-data/master/earthquakes/config.json",
     "geosureConfig": newyorkConfig
-  }
+  },
+  geosurePhysicalMap
 ];
