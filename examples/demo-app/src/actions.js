@@ -17,6 +17,7 @@ import {
   MAP_CONFIG_URL
 } from './constants/default-settings';
 import {parseUri} from './utils/url';
+import { geosureSampleMaps } from './_geosure/geosureSampleMaps';
 
 // CONSTANTS
 export const INIT = 'INIT';
@@ -191,9 +192,9 @@ export function loadSample(options, pushRoute = true) {
 function loadRemoteSampleMap(options) {
   return dispatch => {
     // Load configuration first
-    const {configUrl, dataUrl} = options;
+    const {configUrl, dataUrl, geosureConfig} = options;
 
-    Promise.all([loadRemoteConfig(configUrl), loadRemoteData(dataUrl)]).then(
+    Promise.all([loadRemoteConfig(configUrl || geosureConfig), loadRemoteData(dataUrl)]).then(
       ([config, data]) => {
         // TODO: these two actions can be merged
         dispatch(loadRemoteResourceSuccess(data, config, options));
@@ -228,7 +229,9 @@ function loadRemoteConfig(url) {
     // TODO: we should return reject with an appropriate error
     return Promise.resolve(null);
   }
-
+  if (typeof url !== 'string') {
+    return url;
+  }
   return fetch(url).then(resp => {
     if (!resp.ok) {
       return resp.text().then(text => {
@@ -244,7 +247,7 @@ function loadRemoteConfig(url) {
  * @param url to fetch data from (csv, json, geojson)
  * @returns {Promise<any>}
  */
-function loadRemoteData(url) {
+export function loadRemoteData(url) {
   if (!url) {
     // TODO: we should return reject with an appropriate error
     return Promise.resolve(null);
@@ -278,31 +281,37 @@ function loadRemoteData(url) {
  */
 export function loadSampleConfigurations(sampleMapId = null) {
   return dispatch => {
-    fetch(MAP_CONFIG_URL)
-      .then(response => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(text);
-          });
-        } else {
-          return response.json();
-        }
-      })
-      .then(samples => {
-        dispatch(loadMapSampleFile(samples));
-        // Load the specified map
-        const map = sampleMapId && samples.find(s => s.id === sampleMapId);
-        if (map) {
-          dispatch(loadSample(map, false));
-        }
-      })
-      .catch(error => {
-        dispatch(
-          loadRemoteResourceError(
-            {message: `${error} - ${LOADING_SAMPLE_LIST_ERROR_MESSAGE}`},
-            MAP_CONFIG_URL
-          )
-        );
-      });
+    // fetch(MAP_CONFIG_URL)
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       return response.text().then(text => {
+    //         throw new Error(text);
+    //       });
+    //     } else {
+    //       return response.json();
+    //     }
+    //   })
+    //   .then(samples => {
+        // dispatch(loadMapSampleFile(samples));
+        // // Load the specified map
+        // const map = sampleMapId && samples.find(s => s.id === sampleMapId);
+        // if (map) {
+        //   dispatch(loadSample(map, false));
+        // }
+    //   })
+    //   .catch(error => {
+    //     dispatch(
+    //       loadRemoteResourceError(
+    //         {message: `${error} - ${LOADING_SAMPLE_LIST_ERROR_MESSAGE}`},
+    //         MAP_CONFIG_URL
+    //       )
+    //     );
+    //   });
+    dispatch(loadMapSampleFile(geosureSampleMaps));
+    // Load the specified map
+    const map = sampleMapId && geosureSampleMaps.find(s => s.id === sampleMapId);
+    if (map) {
+      dispatch(loadSample(map, false));
+    }
   };
 }

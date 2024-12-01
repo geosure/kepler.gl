@@ -336,7 +336,8 @@ export default function ModalContainerFactory(
               />
             );
             modalProps = {
-              title: 'modal.title.addDataToMap',
+              // title: 'modal.title.addDataToMap',
+              title: 'Select City',
               cssStyle: LoadDataModalStyle,
               footer: false,
               onConfirm: this._closeModal

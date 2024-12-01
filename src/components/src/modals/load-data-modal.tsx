@@ -99,11 +99,11 @@ export function LoadDataModalFactory(
 
     return (
       <StyledLoadDataModal>
-        <ModalTabs
+        {/* <ModalTabs
           currentMethod={currentMethod?.id}
           loadingMethods={loadingMethods}
           toggleMethod={toggleMethod}
-        />
+        /> */}
         {isCloudMapLoading ? (
           <LoadingDialog size={64} />
         ) : (

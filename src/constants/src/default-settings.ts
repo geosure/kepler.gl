@@ -290,7 +290,8 @@ export const DEFAULT_MAP_STYLES: BaseMapStyle[] = [
   {
     id: 'dark-matter',
     label: 'DarkMatter',
-    url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+    // url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+    url: 'https://raw.githubusercontent.com/geosure/kepler.gl/refs/heads/demowebapp/src/_geosure/geosure_style_1.json',
     icon: `${BASEMAP_ICON_PREFIX}/DARKMATTER.png`,
     layerGroups: DEFAULT_LAYER_GROUPS,
     colorMode: BASE_MAP_COLOR_MODES.DARK,

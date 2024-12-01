@@ -20,6 +20,7 @@ import Announcement, {FormLink} from './components/announcement';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 import {replaceMapControl} from './factories/map-control';
 import {replacePanelHeader} from './factories/panel-header';
+import {replaceSideBar} from './factories/left-side-bar';
 import {CLOUD_PROVIDERS_CONFIGURATION, DEFAULT_FEATURE_FLAGS} from './constants/default-settings';
 import {messages} from './constants/localization';
 
@@ -27,7 +28,8 @@ import {
   loadRemoteMap,
   loadSampleConfigurations,
   onExportFileSuccess,
-  onLoadCloudMapSuccess
+  onLoadCloudMapSuccess,
+  loadRemoteData,
 } from './actions';
 
 import {loadCloudMap, addDataToMap, addNotification, replaceDataInMap} from '@kepler.gl/actions';
@@ -36,7 +38,8 @@ import {CLOUD_PROVIDERS} from './cloud-providers';
 const KeplerGl = require('@kepler.gl/components').injectComponents([
   replaceLoadDataModal(),
   replaceMapControl(),
-  replacePanelHeader()
+  replacePanelHeader(),
+  replaceSideBar()
 ]);
 
 // Sample data
@@ -52,6 +55,7 @@ import sampleIconCsv, {config as savedMapConfig} from './data/sample-icon-csv';
 import sampleGpsData from './data/sample-gps-data';
 import sampleRowData, {config as rowDataConfig} from './data/sample-row-data';
 import {processCsvData, processGeojson, processRowObject} from '@kepler.gl/processors';
+import { geosureMapConfig } from './_geosure/geosureMapConfig';
 /* eslint-enable no-unused-vars */
 
 const BannerHeight = 48;
@@ -140,6 +144,55 @@ class App extends Component {
 
     // Notifications
     // this._loadMockNotifications();
+    this._addGeoSureData()
+  }
+
+  _addGeoSureData = () => {
+    const urls = [
+      
+    ]
+    const loadedData = [];
+
+    // Map over the urls and call loadRemoteData for each, collecting the promises
+    const promises = urls.map(url => loadRemoteData(url));
+  
+    // Wait for all promises to resolve
+    Promise.all(promises)
+      .then(results => {
+        // Add the resolved data to loadedData array
+        // Array.prototype.push.apply(loadedData, results);
+        console.log(results[1])
+
+        this.props.dispatch(
+          addDataToMap({
+            datasets: [
+              {
+                info: {
+                  label: 'Physical Scores',
+                  id: 'physical'
+                },
+                data: processRowObject(results[0].data)
+              },
+              {
+              info: {
+                label: 'Battles',
+                id: 'battles'
+              },
+              data: processRowObject(results[1].data)
+              }
+            ],
+            config: geosureMapConfig,
+            options: {
+              keepExistingConfig: true
+            }
+          })
+        );
+
+      })
+      .catch(error => {
+        // Handle any error that occurred during data loading
+        console.error('Error loading data:', error);
+      });
   }
 
   _setStartScreenCapture = flag => {
