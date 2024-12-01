@@ -247,7 +247,7 @@ function loadRemoteConfig(url) {
  * @param url to fetch data from (csv, json, geojson)
  * @returns {Promise<any>}
  */
-function loadRemoteData(url) {
+export function loadRemoteData(url) {
   if (!url) {
     // TODO: we should return reject with an appropriate error
     return Promise.resolve(null);
